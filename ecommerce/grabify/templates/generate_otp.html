@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<center><strong>CONFRIM YOUR ACCOUNT</strong></center>
+
+<center><p>Enter your email id<p></center>
+
+<body>
+    {% if error_flag %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% endif %}
+    <form action="{% url 'generate_otp' %}" method="POST">
+        {% csrf_token %}
+        <center><input style='width: 30%' type="email" placeholder="enter the email" name="email"></center><br><br>
+        <center><button style="background-color: black; color:white; padding: 10px 15px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer; " type="submit">verify</button></center>
+    </form>
+</body>
+
+{% endblock body %}
+

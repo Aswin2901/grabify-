@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #dddddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .order-items-table {
+            margin-top: 10px;
+            width: 100%;
+        }
+        .order-items-table th, .order-items-table td {
+            padding: 8px;
+            border: 1px solid #dddddd;
+            text-align: left;
+        }
+        .order-items-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Sales Report</h2>
+
+{% for order_details in orders %}
+    <table>
+        <thead>
+            <tr>
+                <th colspan="2">Order Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Order #:</strong></td>
+                <td>GR000{{ order_details.order.id }}</td>
+            </tr>
+            <tr>
+                <td><strong>Status:</strong></td>
+                <td>{{ order_details.order.get_status_display }}</td>
+            </tr>
+            <tr>
+                <td><strong>Total:</strong></td>
+                <td>${{ order_details.order.total }}</td>
+            </tr>
+            <tr>
+                <td><strong>Placed At:</strong></td>
+                <td>{{ order_details.order.created_at }}</td>
+            </tr>
+            <tr>
+                <td><strong>Arriving At:</strong></td>
+                <td>{{ order_details.order.arriving_date }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Order Items</h3>
+    <table class="order-items-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order_item in order_details.order_items %}
+                <tr>
+                    <td>{{ order_item.product.name }}</td>
+                    <td>{{ order_item.quantity }}</td>
+                    <td>${{ order_item.product.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+
+</body>
+</html>

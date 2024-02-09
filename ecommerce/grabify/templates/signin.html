@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<style>
+    .messages-container {
+      text-align: center;
+      margin-top: 20px; /* Adjust as needed */
+    }
+  
+    .messages {
+      list-style: none;
+      padding: 10px;
+      background-color: #FFBABA; /* Light red background color */
+      color: #D8000C; /* Dark red text color */
+      border: 1px solid #D8000C; /* Dark red border */
+      border-radius: 5px;
+      font-size: 18px; /* Adjust as needed */
+    }
+  </style>
+  
+<!--Body Content-->
+<div id="page-content">
+    <!--Page Title-->
+    <div class="page section-header text-center">
+        <div class="page-title">
+            <div class="wrapper"><h1 class="page-width">Create an Account</h1></div>
+        </div>
+    </div>
+    <!--End Page Title-->
+    {% if error_flag %}
+            <div class="alert alert-danger">
+                {{ error_message }}
+            </div>
+
+    {% elif success_flag %}
+            <div class="alert alert-success">
+                {{ success_message }}
+            </div>
+    {% endif %}
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
+                <div class="mb-4">
+                    <form method="post" action="{% url 'signin' %}" id="CustomerLoginForm" accept-charset="UTF-8" class="contact-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="FullName">Full Name</label>
+                                    <input type="text" name="fullname" placeholder="" id="FullName" autofocus="">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="CustomerEmail">Email</label>
+                                    <input type="email" name="email" placeholder="Email" required>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="CustomerPassword">Password</label>
+                                    <input type="password" value="" name="password1" placeholder="" id="Password1" class="">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="ConfirmPassword">Confirm Password</label>
+                                    <input type="password" value="" name="password2" placeholder="" id="password2" class="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="submit" class="btn mb-3" value="Create">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--End Body Content-->
+
+
+{% endblock body %}

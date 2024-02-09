@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<style>
+    .cart_qtyField {
+        display: flex;
+        align-items: center;
+    }
+
+    .cart_qtyBtn {
+        display: inline-block;
+        background-color: black;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .cart_qtyBtn i {
+        color: white;
+    }
+
+    .qty {
+        width: 30px; /* Set the width as needed */
+        padding: 5px;
+        margin: 0px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        background-color: white;
+    }
+</style>
+
+
+    <!--Body Content-->
+    <div id="page-content">
+        <!--Page Title-->
+        <div class="page section-header text-center">
+            <div class="page-title">
+                <div class="wrapper"><h1 class="page-width">Your cart</h1></div>
+            </div>
+        </div>
+        <!--End Page Title-->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-8 col-lg-8 main-col">
+                    {% if error_flag %}
+                            <div class="alert alert-danger">
+                                {{ error_message }}
+                            </div>
+
+                    {% elif success_flag %}
+                            <div class="alert alert-success">
+                                {{ success_message }}
+                            </div>
+                    {% endif %}
+                    <form action="{% url 'update_cart' %}" method="post" class="cart style2">
+                        {% csrf_token %}
+                        <table>
+                            <thead class="cart__row cart__header">
+                                <tr>
+                                    <th colspan="2" class="text-center">Product</th>
+                                    <th class="text-center">Size</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-right">Total</th>
+                                    <th class="action">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cart_item in cart_items %}
+                                    <tr class="cart__row border-bottom line1 cart-flex border-top">
+                                        <td class="cart__image-wrapper cart-flex-item">
+                                            <a href="#"><img class="cart__image" src="{{ cart_item.product.image.url }}" alt="{{ cart_item.product.name }}" width="100px" height="140px" ></a>
+                                        </td>
+                                        <td class="cart__meta small--text-left cart-flex-item">
+                                            <div class="list-view-item__title">
+                                                <a href="#">{{ cart_item.product.name }}</a>
+                                            </div>
+                                        
+                                        </td>
+                                        <td class="cart__meta small--text-left cart-flex-item text-center">
+                                            <div class="list-view-item__title">
+                                                <a href="#">{{ cart_item.size }}</a>
+                                            </div>
+                                        
+                                        </td>
+                                        <td class="cart__price-wrapper cart-flex-item">
+                                            <span class="money">${{ cart_item.product.price }}</span>
+                                        </td>
+                                        <td class="cart__update-wrapper cart-flex-item text-right">
+                                            <div class="cart__qty text-center">
+                                                <div class="cart_qtyField">
+                                                    <a class="cart_qtyBtn minus" href="{% url 'quantity_minus' cart_item.product.id %}"><i class="icon icon-minus"></i></a>
+                                                    <input class="cart__qty-input qty" type="text" name="current_quantity" id="qty" value="{{ cart_item.quantity }}" pattern="[0-9]*">
+                                                    <a class="cart_qtyBtn plus" href="{%  url 'quantity_plus' cart_item.product.id %}"><i class="icon icon-plus"></i></a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-right small--hide cart-price">
+                                            <div><span class="money">${{ cart_item.total }}</span></div>
+                                        </td>
+                                        <td class="text-center small--hide">
+                                            <form method="post" action="{% url 'update_cart' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="product_id" value="{{ cart_item.product.id }}">
+                                                <button type="submit" name="action" value="remove">Remove</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-left"><a href="{% url 'shop_lap_list' %}" class="btn--link cart-continue"><i class="icon icon-arrow-circle-left"></i> Continue shopping</a></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </form>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer order-first order-md-last">
+                    <div class="solid-border">
+                        <div class="row">
+                            <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Subtotal</strong></span>
+                            <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">${{ total_sum|default:0.00 }}</span></span>
+                        </div>
+                        <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
+                        <a href="{% url 'checkout' %}" class="btn btn--small-wide checkout" id="cartCheckout">Checkout</a>
+                        <div class="paymnet-img">
+                            <img src="{% static "grabify/images/payment-img.jpg" %}" alt="Payment" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <!--End Body Content-->
+
+{% endblock body %}

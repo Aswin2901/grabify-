@@ -1,0 +1,158 @@
+{% extends "admin_base.html" %}
+{% block body %}
+{% load static %}
+{% load static custom_filters %}
+<div class="content">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h4 class="page-title">{% if edit_mode %}Edit Product{% else %}Add Product{% endif %}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <form method="post" enctype="multipart/form-data" 
+                  action="{% if edit_mode %}{% url 'custom_admin:edit_product' product.id %}{% else %}{% url 'custom_admin:add_product' %}{% endif %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Product Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" id="id_name" required class="form-control" 
+                                   value="{% if edit_mode %}{{ product.name }}{% endif %}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Product Image</label>
+                            <div class="profile-upload">
+                                <div class="upload-img">
+                                    <img alt="" src="{% if edit_mode %}{{ product.image.url }}{% else %}{% static "custom_admin/img/user.jpg" %}{% endif %}" >
+                                </div>
+                                <div class="upload-input">
+                                    <input type="file" name="image" id="id_image" accept="image/*" {% if not edit_mode %}required{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Variant Images</label>
+                            <div class="profile-upload">
+                                <div class="upload-img">
+                                    {% if edit_mode %}
+                                        {% for variant_image in variant_images %}
+                                            {% if variant_image.image %}
+                                                <div id="variant_image_{{ variant_image.id }}">
+                                                    <img alt="image" src="{{ variant_image.image.url }}">
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeVariantImage('{{ variant_image.id }}')">Remove</button>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <script>
+                                    var removedImages = []; // Create a list to store removed images
+                                
+                                    function removeVariantImage(imageId) {
+                                        // Assuming you want to remove the image container
+                                        var imageContainer = document.getElementById('variant_image_' + imageId);
+                                
+                                        // Check if the image container exists
+                                        if (imageContainer) {
+                                            // Parse the imageId to an integer
+                                            var idAsInt = parseInt(imageId, 10);
+                                
+                                            // Create an object to represent the removed image
+                                            var removedImage = {
+                                                id: idAsInt,
+                                                src: imageContainer.getAttribute('src') // Assuming the image source is stored in the 'src' attribute
+                                            };
+                                
+                                            // Add the removed image object to the list
+                                            removedImages.push(removedImage);
+                                
+                                            // Update the value of the hidden input field
+                                            updateRemovedImagesInput();
+                                
+                                            // Remove the image container from the DOM
+                                            imageContainer.parentNode.removeChild(imageContainer);
+                                
+                                            // Optionally, you can also send an AJAX request to your server to delete the image from the database.
+                                            // Implement the server-side logic accordingly.
+                                        }
+                                    }
+                                
+                                    function updateRemovedImagesInput() {
+                                        // Get the hidden input field
+                                        var removedImagesInput = document.getElementById('id_removed_images');
+                                
+                                        // Convert the removedImages array to a JSON string
+                                        var removedImagesJson = JSON.stringify(removedImages);
+                                
+                                        // Update the value of the hidden input field
+                                        removedImagesInput.value = removedImagesJson;
+                                    }
+                                </script>
+                                
+                                <div class="upload-input">
+                                    <input type="hidden" name="removed_images" id="id_removed_images" value="{{ removed_images_json }}">
+                                    <input type="file" name="variants" id="id_variants" accept="image/*" multiple>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="category" id="id_category" required class="form-control">
+                                {% for category in categories %}
+                                    {% if category.status != 'inactive' %}
+                                        <option value="{{ category.id }}" {% if edit_mode and category.id == product.category.id %}selected{% endif %}>{{ category.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>                            
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="status" id="id_status" required class="form-control">
+                                {% if not edit_mode %}
+                                    <option value="active" selected>Active</option>
+                                    <option value="inactive" selected>Inactive</option>
+                                    <!-- You can set a default status here -->
+                                {% else %}
+                                    <option value="active" {% if product.status == 'active' %}selected{% endif %}>Active</option>
+                                    <option value="inactive" {% if product.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                                    <!-- Add more options if needed -->
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_price">Price:</label>
+                            <input type="number" name="price" id="id_price" required class="form-control" 
+                                   value="{% if edit_mode %}{{ product.price }}{% endif %}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="id_details">Description</label>
+                            <textarea class="form-control" rows="3" cols="30" name="description" id="id_details" required>{% if edit_mode %}{{ product.description }}{% endif %}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-t-20 text-center">
+                    <button class="btn btn-primary submit-btn" type="submit">{% if edit_mode %}Update Product{% else %}Create Product{% endif %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

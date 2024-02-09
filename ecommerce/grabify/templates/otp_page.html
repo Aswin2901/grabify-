@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<style>
+    form {
+        text-align: center;
+        margin: 0 auto;
+        max-width: 80%;
+    }
+
+    form input[type="text"],
+    {
+        width: 50%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    /* Style for the submit button */
+    form button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    form button:hover {
+        background-color: black;
+    }
+</style>
+<center><strong>CONFRIM YOUR ACCOUNT</strong></center>
+
+<center><p>check the inbox of your email - {{email}} - and enter the otp<p></center>
+
+<body>
+    <form action="{% url 'otp_verification' %}" method="POST">
+        {% csrf_token %}
+        <center>Enter the otp : <input type="text" placeholder="enter the otp" name="otp"></center><br><br>
+        <center><button type="submit">verify</button></center>
+    </form>
+</body>
+
+
+{%if messages%}
+<script>alert('{{messages}}')</script>
+{%endif%}
+{% endblock body %}
+

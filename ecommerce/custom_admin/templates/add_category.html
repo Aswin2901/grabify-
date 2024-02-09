@@ -1,0 +1,27 @@
+{% extends "admin_base.html" %}
+{% block body %}
+{% load static %}
+<form method="post" enctype="multipart/form-data" 
+      action="{% if edit_mode %}{% url 'custom_admin:edit_category' category.id %}{% else %}{% url 'custom_admin:add_category' %}{% endif %}">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Category Name <span class="text-danger">*</span></label>
+                <input type="text" name="name" id="id_name" required class="form-control" 
+                       value="{% if edit_mode %}{{ category.name }}{% endif %}">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id_details">Description</label>
+                <textarea class="form-control" rows="3" cols="30" name="description" id="id_details" required>{% if edit_mode %}{{ category.description }}{% endif %}</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="m-t-20 text-center">
+        <button class="btn btn-primary submit-btn" type="submit">{% if edit_mode %}Update Category{% else %}Create Category{% endif %}</button>
+    </div>
+</form>
+
+{% endblock %}

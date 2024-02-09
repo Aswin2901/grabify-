@@ -1,0 +1,529 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+
+<head>
+    
+    <style> 
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
+
+        /* Resetting */
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        
+        #sidebar {
+            padding: 15px 0px 15px 0px;
+            border-radius: 10px;
+        }
+
+        #sidebar .h4 {
+            font-weight: 500;
+            padding-left: 15px;
+        }
+
+        #sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding-left: 0rem;
+        }
+
+        #sidebar ul li {
+            padding: 10px 0;
+            display: block;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-left: 5px solid transparent;
+        }
+
+        #sidebar ul li.active {
+            border-left: 5px solid #ff5252;
+            background-color: #44007c;
+        }
+
+        #sidebar ul li a {
+            display: block;
+        }
+
+        #sidebar ul li a .fas,
+        #sidebar ul li a .far {
+            color: #ddd;
+        }
+
+        #sidebar ul li a .link {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        #sidebar ul li a .link-desc {
+            font-size: 0.8rem;
+            color: #ddd;
+        }
+
+        #main-content {
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        #main-content .h5,
+        #main-content .text-uppercase {
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        #main-content .h5+div {
+            font-size: 0.9rem;
+        }
+
+        #main-content .box {
+            padding: 10px;
+            border-radius: 6px;
+            width: 170px;
+            height: 90px;
+        }
+
+        #main-content .box img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        #main-content .box .tag {
+            font-size: 0.9rem;
+            color: #000;
+            font-weight: 500;
+        }
+
+        #main-content .box .number {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .order {
+            padding: 10px 30px;
+            min-height: 150px;
+        }
+
+        .order .order-summary {
+            height: 100%;
+        }
+
+        .order .blue-label {
+            background-color: #aeaeeb;
+            color: #0046dd;
+            font-size: 0.9rem;
+            padding: 0px 3px;
+        }
+
+        .order .green-label {
+            background-color: #a8e9d0;
+            color: #008357;
+            font-size: 0.9rem;
+            padding: 0px 3px;
+        }
+
+        .order .fs-8 {
+            font-size: 0.85rem;
+        }
+
+        .order .rating img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        .order .rating .fas,
+        .order .rating .far {
+            font-size: 0.9rem;
+        }
+
+        .order .rating .fas {
+            color: #daa520;
+        }
+
+        .order .status {
+            font-weight: 600;
+        }
+
+        .order .btn.btn-primary {
+            background-color: #fff;
+            color: #4e2296;
+            border: 1px solid #4e2296;
+        }
+
+        .order .btn.btn-primary:hover {
+            background-color: #4e2296;
+            color: #fff;
+        }
+
+        .order .progressbar-track {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .order .progressbar-track .progressbar {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 0rem;
+        }
+
+        .order .progressbar-track .progressbar li {
+            font-size: 1.5rem;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            border-radius: 50%;
+            background-color: #dddddd;
+            z-index: 100;
+            position: relative;
+        }
+
+        .order .progressbar-track .progressbar li.green {
+            border: 1px solid #007965;
+            background-color: #d5e6e2;
+        }
+
+        .order .progressbar-track .progressbar li::after {
+            position: absolute;
+            font-size: 0.9rem;
+            top: 50px;
+            left: 0px;
+        }
+
+        #tracker {
+            position: absolute;
+            border-top: 1px solid #bbb;
+            width: 100%;
+            top: 25px;
+        }
+
+        #step-1::after {
+            content: 'Placed';
+        }
+
+        #step-2::after {
+            content: 'Accepted';
+            left: -10px;
+        }
+
+        #step-3::after {
+            content: 'Packed';
+        }
+
+        #step-4::after {
+            content: 'Shipped';
+        }
+
+        #step-5::after {
+            content: 'Delivered';
+            left: -10px;
+        }
+
+
+
+        /* Backgrounds */
+        .bg-purple {
+            background-color: #55009b;
+        }
+
+        .bg-light {
+            background-color: #f0ecec !important;
+        }
+
+        .green {
+            color: #007965 !important;
+        }
+
+        /* Media Queries */
+        @media(max-width: 1199.5px) {
+            nav ul li {
+                padding: 0 10px;
+            }
+        }
+
+        @media(max-width: 500px) {
+            .order .progressbar-track .progressbar li {
+                font-size: 1rem;
+            }
+
+            .order .progressbar-track .progressbar li::after {
+                font-size: 0.8rem;
+                top: 35px;
+            }
+
+            #tracker {
+                top: 20px;
+            }
+        }
+
+        @media(max-width: 440px) {
+            #main-content {
+                padding: 20px;
+            }
+
+            .order {
+                padding: 20px;
+            }
+
+            #step-4::after {
+                left: -5px;
+            }
+        }
+
+        @media(max-width: 395px) {
+            .order .progressbar-track .progressbar li {
+                font-size: 0.8rem;
+            }
+
+            .order .progressbar-track .progressbar li::after {
+                font-size: 0.7rem;
+                top: 35px;
+            }
+
+            #tracker {
+                top: 15px;
+            }
+
+            .order .btn.btn-primary {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media(max-width: 355px) {
+            #main-content {
+                padding: 15px;
+            }
+
+            .order {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+{% if error_flag %}
+    <script>
+        var errorMessage = "{{ error_message }}";
+
+        // Customize the appearance of the alert
+        var customStyle = "color: white; background-color: #444; font-weight: bold;";
+
+        // Display the alert with customized appearance
+        alert(errorMessage);
+    </script>
+{% endif %}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-3 my-lg-0 my-md-1">
+            <div id="sidebar" class="bg-purple">
+                <div class="h4 text-white">Account</div>
+                <ul>
+                    <li class="active">
+                        <a href="{% url 'user_profile' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="d-flex flex-column">
+                                <div class="link">My Account</div>
+                                <div class="link-desc">View & Manage orders and returns</div>
+                            </div>
+                        </a>
+                    </li>
+
+                    
+                    <li>
+                        <a href="{% url 'user_orders' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="d-flex flex-column">
+                                <div class="link">My Orders</div>
+                                <div class="link-desc">View & Manage orders and returns</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'user_address' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="d-flex flex-column">
+                                <div class="link">Address Book</div>
+                                <div class="link-desc">View & Manage Addresses</div>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'wallet' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="d-flex flex-column">
+                                <div class="link">Wallet</div>
+                                <div class="link-desc">View Your Wallet</div>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'wishlist' %}" class="text-decoration-none d-flex align-items-start">
+                            <div class="d-flex flex-column">
+                                <div class="link">Wishlist</div>
+                                <div class="link-desc">See your Wishlists</div>
+                            </div>
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#" class="text-decoration-none d-flex align-items-start" id="logout-link">
+                            <div class="d-flex flex-column">
+                                <div class="link">Logout</div>
+                                <div class="link-desc">Logout your account</div>
+                            </div>
+                        </a>
+                    </li>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            // Find the logout link element
+                            var logoutLink = document.getElementById("logout-link");
+                    
+                            // Add a click event listener to the logout link
+                            logoutLink.addEventListener("click", function(e) {
+                                // Prevent the default behavior of the link
+                                e.preventDefault();
+                    
+                                // Show a confirmation dialog
+                                var isConfirmed = confirm("Are you sure you want to logout your account?");
+                    
+                                // Check if the user confirmed
+                                if (isConfirmed) {
+                                    // If confirmed, navigate to the logout URL
+                                    window.location.href = "{% url 'logout' %}";
+                                } else {
+                                    window.location.href = "{% url 'user_profile' %}";
+                                }
+                            });
+                        });
+                    </script>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-9 my-lg-0 my-1">
+            <div id="main-content" class="bg-white border">
+                <div class="d-flex flex-column" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px; position: relative;">
+                    <div class="h5">Hello {{user.fullname}},</div>
+                    <div>Logged in as: {{user.email}}</div>
+                    <div style="margin-top: 10px;">
+                        Password: ******
+                        <a href="{% url 'change_password' %}" style="margin-left: 10px; color: blue;">Change password?</a>
+                    </div>
+                    <a href="{% url 'edit_profile' %}" style="position: absolute; top: 10px; right: 10px; color: blue;">Edit</a>
+                </div>
+
+                <div class="d-flex my-4 flex-wrap">
+                    <div class="box me-4 my-1 bg-light">
+                        <div class="d-flex align-items-center mt-2">
+                            <a href="{% url 'user_orders' %}">
+                                <img src="{% static 'custom_admin\img\pngwing.com.png' %}"
+                                    alt="" style="margin-right: 10px;">
+                            </a>
+                            <div class="ms-auto number"> {{order_count}} </div>
+                    </div>
+                        <div class="d-flex align-items-center mt-2">
+                            <div class="tag">Orders placed</div>
+                        </div>
+                </div>
+
+                    
+                    
+                    <div class="box me-4 my-1 bg-light">
+                        <div class="d-flex align-items-center mt-2">
+                            <a href="{% url 'cart_management' %}">
+                                <img src="{% static 'custom_admin\img\shopping-cart-campus-recreation-university-nebraska-lincoln-30.png' %}"
+                                    alt="" style="margin-right: 10px;">
+                            </a>
+                            <div class="ms-auto number"> {{cart_count}} </div>
+                        </div>
+                        <div class="d-flex align-items-center mt-2">
+                            <div class="tag">Items in Cart</div>
+                        </div>
+                    </div>
+
+                    <div class="box me-4 my-1 bg-light">
+                        <div class="d-flex align-items-center mt-2">
+                            <a href="{% url 'wishlist' %}">
+                                <img src="{% static 'custom_admin\img\Love_Heart_symbol.svg.png' %}"
+                                    alt="" style="margin-right: 10px;">
+                            </a>
+                            <div class="ms-auto number"> {{ wishlist_count }} </div>
+                        </div>
+                        <div class="d-flex align-items-center mt-2">
+                            <div class="tag">Wishlist</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-uppercase">My recent orders</div>
+                {% for order in order_data %}
+                    {% if forloop.counter <= 3 %}
+                            <div class="order my-3 bg-light">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="d-flex flex-column justify-content-between order-summary">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="text-uppercase">Order #GR000{{order.order_id}} </div>
+                                                <div class="blue-label ms-auto text-uppercase">{% if order.payment == 'cash_on_delivery' %}  COD {% elif order.payment == 'paypal' %} Paypal {% endif %} </div>
+                                            </div>
+                                            <div class="fs-8">Products : {{order.product_name}} </div>
+                                            <div class="fs-8"> {{order.order_date}} | {{order.arriving_date}} </div>
+                                            <div class="rating d-flex align-items-center pt-1">
+                                                <img src="https://www.freepnglogos.com/uploads/like-png/like-png-hand-thumb-sign-vector-graphic-pixabay-39.png"
+                                                    alt="Like icon">
+                                                <span class="px-2">Rating:</span>
+                                                <span class="fa fa-star-o"></span>
+                                                <span class="fa fa-star-o"></span>
+                                                <span class="fa fa-star-o"></span>
+                                                <span class="fa fa-star-o"></span>
+                                                <span class="fa fa-star-o"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <div class="d-flex flex-column justify-content-between h-100">
+                                            <div class="d-sm-flex align-items-sm-start justify-content-sm-between mb-3">
+                                                <div class="status">Status: {{order.status}} </div>
+                                                <a href="{% url 'order_details' order.order_id %}" class="btn btn-primary text-uppercase">Order Info</a>
+                                            </div>
+                                            <div class="progressbar-track">
+                                                <ul class="progressbar d-flex justify-content-between">
+                                                    <li id="step-1" class="{% if order.status == 'Cancelled' %}text-muted red{% elif 1 in order.step %}text-muted green{% endif %}">
+                                                        <span class="fa fa-handshake-o"></span>
+                                                    </li>
+                                                    <li id="step-2" class="{% if order.status == 'Cancelled' %}text-muted red{% elif 2 in order.step %}text-muted green{% endif %}">
+                                                        <span class="fa fa-check"></span>
+                                                    </li>
+                                                    <li id="step-3" class="{% if order.status == 'Cancelled' %}text-muted red{% elif 3 in order.step %}text-muted green{% endif %}">
+                                                        <span class="fa fa-gift"></span>
+                                                    </li>
+                                                    <li id="step-4" class="{% if order.status == 'Cancelled' %}text-muted red{% elif 4 in order.step %}text-muted green{% endif %}">
+                                                        <span class="fa fa-truck"></span>
+                                                    </li>
+                                                    <li id="step-5" class="{% if order.status == 'Cancelled' %}text-muted red{% elif 5 in order.step %}text-muted green{% endif %}">
+                                                        <span class="fa fa-smile-o"></span>
+                                                    </li>
+                                                </ul>
+                                                <div id="tracker"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                {% endfor %}
+                
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock body %}
+
+

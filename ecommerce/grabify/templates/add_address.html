@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<style>
+    .center-container {
+        width: 75%; /* You can adjust the width as needed */
+        margin: auto;
+        margin-top: 50px; /* Optional: Add some top margin for spacing */
+    }
+    #main-content form {
+        padding: 20px; /* Adjust the padding as needed for the form */
+    }
+</style>
+
+<div class="col-lg-9 my-lg-0 my-1 center-container">
+    <div id="main-content" class="bg-white border">
+        {% if error_flag %}
+            <div class="alert alert-danger">
+                {{ error_message }}
+            </div>
+
+        {% elif success_flag %}
+            <div class="alert alert-success">
+                {{ success_message }}
+            </div>
+        {% endif %}
+        <form method="post" action="{% url 'add_address' %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_first_name">First Name <span class="required-f">*</span></label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <p class="error">{{ form.first_name.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_last_name">Last Name <span class="required-f">*</span></label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <p class="error">{{ form.last_name.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_email">E-Mail <span class="required-f">*</span></label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="error">{{ form.email.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_telephone">Telephone <span class="required-f">*</span></label>
+                    {{ form.telephone }}
+                    {% if form.telephone.errors %}
+                        <p class="error">{{ form.telephone.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-6 col-xl-6">
+                    <label for="id_company">Company</label>
+                    {{ form.company }}
+                    {% if form.company.errors %}
+                        <p class="error">{{ form.company.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_address_1">Address <span class="required-f">*</span></label>
+                    {{ form.address_1 }}
+                    {% if form.address_1.errors %}
+                        <p class="error">{{ form.address_1.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_city">City <span class="required-f">*</span></label>
+                    {{ form.city }}
+                    {% if form.city.errors %}
+                        <p class="error">{{ form.city.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_postcode">Post Code <span class="required-f">*</span></label>
+                    {{ form.postcode }}
+                    {% if form.postcode.errors %}
+                        <p class="error">{{ form.postcode.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_country">Country <span class="required-f">*</span></label>
+                    {{ form.country }}
+                    {% if form.country.errors %}
+                        <p class="error">{{ form.country.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="id_region">Region / State <span class="required-f">*</span></label>
+                    {{ form.region }}
+                    {% if form.region.errors %}
+                        <p class="error">{{ form.region.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12 col-lg-12 col-xl-12 text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock body %}
+

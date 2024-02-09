@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% load static %}
+
+<style>
+    .wishlist-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .wishlist-item {
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        padding: 10px;
+        overflow: hidden;
+    }
+
+    .wishlist-item img {
+        float: left;
+        margin-right: 10px;
+        width: 100px;
+        height: 150px;
+    }
+
+    .wishlist-details {
+        float: left;
+        width: calc(100% - 120px); /* Subtracting image width and margin */
+    }
+
+    .wishlist-details h3 {
+        margin-top: 0;
+    }
+
+    .wishlist-details p {
+        margin: 5px 0;
+    }
+
+    .wishlist-details .description {
+        clear: both;
+        margin-top: 10px;
+        max-height: 100px; /* Set maximum height */
+        overflow-y: auto; /* Enable vertical scrolling */
+        padding-right: 15px; /* Add right padding to account for scrollbar */
+    }
+
+    .wishlist-remove-form {
+        float: right;
+    }
+
+    .wishlist-remove-form button {
+        background-color: #dc3545; /* Red background color */
+        color: #fff; /* White text color */
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .wishlist-remove-form button:hover {
+        background-color: #c82333; /* Darker red color on hover */
+    }
+</style>
+
+<div class="wishlist-container">
+    <h1>Wishlist</h1>
+    {% if wishlist_items %}
+        {% for item in wishlist_items %}
+            <div class="wishlist-item">
+                <a href="{% url 'product_details' item.product.id %}">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                </a>
+                <div class="wishlist-details">
+                    <h3>
+                        <a href="{% url 'product_details' item.product.id %}">
+                            {{ item.product.name }}
+                        </a>
+                    </h3>
+                    {% if item.variant %}
+                        <p>Variant: {{ item.variant.name }}</p>
+                    {% endif %}
+                    <p>Price: ${{ item.product.price }}</p>
+                    <p class="description">Details: {{ item.product.description }}</p>
+                    <form class="wishlist-remove-form" action="{% url 'remove_from_wishlist' item.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit">Remove from Wishlist</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Your wishlist is empty.</p>
+        <h3> 
+            <a href="{% url 'shop_lap_list' %}" class="btn--link cart-continue"> Add your new wishlist </a>
+        </h3>
+    {% endif %}
+</div>
+
+{% endblock body %}

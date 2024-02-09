@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        div {
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        strong {
+            color: #333;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Invoice for Order #GR000{{ order.id }}</h1>
+    
+    <div>
+        <p><strong>Shipping Address:</strong></p>
+        <p>{{ order.address }}</p>
+    </div>
+
+    <div>
+        <p><strong>Order Details:</strong></p>
+        <p>Products: 
+        {% for items in order_item %}
+            {{ items.product.name }},
+        {% endfor %}
+        </p>
+        <p>Order Date: {{ order.created_at }}</p>
+        <p>Arriving Date: {{ arriving_date }}</p>
+        <p>Final Price: ${{ order.total }}</p>
+    </div>
+
+    <div>
+        <p><strong>Payment Information:</strong></p>
+        <p>Payment Method: {% if order.payment == 'cash_on_delivery' %} Cash On Delivery {% elif order.payment == 'paypal' %} Paypal {% endif %} </p>
+    </div>
+
+    <div>
+        <p><strong>Status:</strong> {{ order.status }}</p>
+    </div>
+
+    <button onclick="window.print()">Print Invoice</button>
+</body>
+</html>

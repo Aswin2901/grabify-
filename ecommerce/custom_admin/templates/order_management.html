@@ -1,0 +1,132 @@
+{% extends "admin_base.html" %}
+{% block body %}
+{% load static %}
+
+    <div class="content">
+        <div class="row">
+            <div class="col-sm-4 col-3">
+                <h4 class="page-title">Orders</h4>
+            </div>
+        </div>
+        <form method="get" action="{% url 'custom_admin:order_management' %}" class="form-inline mb-3">
+            <div class="form-group mb-2" style = 'margin-right:5px; height:30px;'>
+                {{ filter_form.status }}
+            </div>
+            <button type="submit" class="btn btn-primary">Apply Filter</button>
+        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped custom-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>User Name</th>
+                                <th>Product Name</th>
+                                <th>Order Date</th>
+                                <th>Arriving date</th>
+                                <th>Status</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in order_data %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'custom_admin:order_details' order.order_id %}" style="color:black;">
+                                            GR000{{ order.order_id }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'custom_admin:order_details' order.order_id %}" style="color:black;">
+                                            {{ order.user_name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'custom_admin:order_details' order.order_id %}" style="color:black;">
+                                            {{ order.product_name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'custom_admin:order_details' order.order_id %}" style="color:black;">
+                                            {{ order.order_date }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'custom_admin:order_details' order.order_id %}" style="color:black;">
+                                            {{ order.arriving_date }}
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        {% if order.status == 'Cancelled' %}
+                                            <span class="custom-badge status-red">{{ order.status }}</span>
+                                        {% elif order.status == 'Packed' or order.status == 'Shipped' %}
+                                            <span class="custom-badge status-orange">{{ order.status }}</span>
+                                        {% else %}
+                                            <span class="custom-badge status-green">{{ order.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    {% if order.status != 'Cancelled' %}
+                                        <td class="text-right">
+                                            <div class="dropdown dropdown-action">
+                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    {% if order.status != 'Accepted' %}
+                                                        <form action="{% url 'custom_admin:change_order_status' order.order_id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="status" value="Accept">
+                                                            <button type="submit" class="dropdown-item">Accept</button>
+                                                        </form>
+                                                    {% endif %}
+                                                    {% if order.status != 'Cancelled' %}
+                                                        <form action="{% url 'custom_admin:change_order_status' order.order_id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="status" value="Cancel">
+                                                            <button type="submit" class="dropdown-item">Cancel</button>
+                                                        </form>
+                                                    {% endif %}
+                                                    {% if order.status != 'Placed' %}
+                                                        <form action="{% url 'custom_admin:change_order_status' order.order_id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="status" value="placed">
+                                                            <button type="submit" class="dropdown-item">Mark as Placed</button>
+                                                        </form>
+                                                    {% endif %}
+                                                    {% if order.status != 'Packed' %}
+                                                        <form action="{% url 'custom_admin:change_order_status' order.order_id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="status" value="packed">
+                                                            <button type="submit" class="dropdown-item">Mark as Packed</button>
+                                                        </form>
+                                                    {% endif %}
+                                                    {% if order.status != 'Shipped' %}
+                                                        <form action="{% url 'custom_admin:change_order_status' order.order_id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="status" value="shipped">
+                                                            <button type="submit" class="dropdown-item">Mark as Shipped</button>
+                                                        </form>
+                                                    {% endif %}
+                                                    {% if order.status != 'Delivered' %}
+                                                        <form action="{% url 'custom_admin:change_order_status' order.order_id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="status" value="delivered">
+                                                            <button type="submit" class="dropdown-item">Mark as Delivered</button>
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+{% endblock body %}
+

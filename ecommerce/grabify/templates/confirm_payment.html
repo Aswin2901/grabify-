@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<style>
+    .lds-hourglass {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 60px auto; /* Center the hourglass vertically */
+    }
+    .lds-hourglass:after {
+        content: " ";
+        display: block;
+        border-radius: 50%;
+        width: 0;
+        height: 0;
+        margin: 8px;
+        box-sizing: border-box;
+        border: 32px solid #fff;
+        border-color: #fff transparent #fff transparent;
+        animation: lds-hourglass 1.2s infinite;
+    }
+    @keyframes lds-hourglass {
+        0% {
+            transform: rotate(0);
+            animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+        }
+        50% {
+            transform: rotate(900deg);
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        100% {
+            transform: rotate(1800deg);
+        }
+    }
+
+    /* Style for the image button */
+    .paypal-button {
+        width: 350px; /* Set the width of the button */
+        height: auto; /* Allow the height to adjust proportionally */
+        margin: 50px auto; /* Center the button horizontally */
+    }
+
+    .paypal-button img {
+        width: 850px; /* Make the image fill the button */
+        height: 320px; /* Allow the height to adjust proportionally */
+    }
+</style>
+<div style="text-align: center; padding: 40px 0; background: #F5D961;">
+    <div style="border-radius: 200px; height: 200px; width: 200px; background: #FFA500; margin: 0 auto;">
+        <!-- Custom hourglass loading animation -->
+        <div class="lds-hourglass"></div>
+    </div>
+    <div style="background: white; padding: 60px; border-radius: 4px; box-shadow: 0 2px 3px #C8D0D8; display: inline-block; margin: 0 auto;">
+        <h1 style="color: #FFA500; font-family: 'Nunito Sans', 'Helvetica Neue', sans-serif; font-weight: 900; font-size: 40px; margin-bottom: 10px;">Processing</h1>
+        <p style="color: #404F5E; font-family: 'Nunito Sans', 'Helvetica Neue', sans-serif; font-size: 20px; margin: 0;">We received your purchase request;<br/> please click here to continue payment ! <br></p>
+
+        <div class="paypal-button">
+            {{ paypal_payment_button.render }} <!-- Image button rendered here -->
+        </div>
+    </div>
+</div>
+{% endblock body %}
+

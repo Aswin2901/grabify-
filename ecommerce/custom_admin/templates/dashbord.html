@@ -1,0 +1,186 @@
+{% extends "admin_base.html" %}
+{% block body %}
+{% load static %}
+<div class="content">
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget">
+                <span class="dash-widget-bg1"><i class="fa fa-cart-plus" style="color:white" aria-hidden="true"></i></span>
+                <div class="dash-widget-info text-right">
+                    <h3>{{ product_list|length }}</h3>
+                    <span class="widget-title1">Products <i class="fa fa-check" aria-hidden="true"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget">
+                <span class="dash-widget-bg2"><i class="fa fa-user-o"></i></span>
+                <div class="dash-widget-info text-right">
+                    <h3>{{ user_list|length }}</h3>
+                    <span class="widget-title2">Users <i class="fa fa-check" aria-hidden="true"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget">
+                <span class="dash-widget-bg3"><i class="fa fa-shopping-bag" style="color:white" aria-hidden="true"></i></span>
+                <div class="dash-widget-info text-right">
+                    <h3> {{ order_list|length }} </h3>
+                    <span class="widget-title3">Orders <i class="fa fa-check" aria-hidden="true"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="dash-widget">
+                <span class="dash-widget-bg4"><i class="fa fa-hourglass-half" style="color:white" aria-hidden="true"></i></span>
+                <div class="dash-widget-info text-right">
+                    <h3> {{ pending_orders_count }} </h3>
+                    <span class="widget-title4">Pending <i class="fa fa-check" aria-hidden="true"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>Sales Report</h2>
+    <a href="{% url 'custom_admin:generate_pdf' %}" class="btn btn-primary">Download PDF</a>
+    <a href="{% url 'custom_admin:generate_excel' %}" class="btn btn-primary">Download Excel</a>
+    <br><br>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6 col-xl-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart-title">
+                        <h4>Sale Graph</h4>
+                        <span class="float-right"><i class="fa fa-caret-up" aria-hidden="true"></i> 15% Higher than Last Month</span>
+                    </div>	
+                    <canvas id="linegraph"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6 col-xl-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="chart-title">
+                        <h4>details</h4>
+                        <div class="float-right">
+                            <ul class="chat-user-total">
+                                <li><i class="fa fa-circle current-users" aria-hidden="true"></i>SALES</li>
+                                <li><i class="fa fa-circle old-users" aria-hidden="true"></i> Users</li>
+                            </ul>
+                        </div>
+                    </div>	
+                    <canvas id="bargraph"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-8 col-xl-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title d-inline-block">New Products</h4> <a href="{% url 'custom_admin:product_list' %}" class="btn btn-primary float-right">View all</a>
+                </div>
+                {% for product in product_list %}
+                    {% if forloop.counter <= 7 %}    
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <thead class="d-none">
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Category</th>
+                                            <th>Price</th>
+                                            <th class="text-right">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="min-width: 200px;">
+                                                <a class="avatar" href="{% url 'custom_admin:product_list' %}">
+                                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                                </a>
+                                                <h2>{{ product.name }}</h2>
+                                            </td>                
+                                            <td>
+                                                <h5 class="time-title p-0"> {{product.category.name}} </h5>
+                                            </td>
+                                            <td>
+                                                <h5 class="time-title p-0"> {{product.price}} </h5>
+                                            </td>
+                                            <td class="text-right">
+                                                {% if product.status == 'active' %}
+                                                    <a href="{% url 'custom_admin:product_list' %}" class="btn btn-outline-success take-btn"> {{ product.status }} </a>
+                                                {% else %}
+                                                    <a href="{% url 'custom_admin:product_list' %}" class="btn btn-outline-danger take-btn"> {{ product.status }} </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 col-xl-4">
+            <div class="card member-panel">
+                <div class="card-header bg-white">
+                    <h4 class="card-title mb-0">Category</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="contact-list">
+                        {% for category in category_list %}
+                            <li>
+                                <div class="contact-cont">
+                                    <div class="contact-info">
+                                        <span class="contact-name text-ellipsis"> {{category.name}} </span>
+                                        <span class="contact-date"> {{category.description}} </span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer text-center bg-white">
+                    <a href="{% url 'custom_admin:category_list' %}" class="text-muted">View all Category</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-8 col-xl-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title d-inline-block">New Users </h4> <a href="{% url 'custom_admin:user_list' %}" class="btn btn-primary float-right">View all</a>
+                </div>
+                <div class="card-block">
+                    <div class="table-responsive">
+                        <table class="table mb-0 new-patient-table">
+                            <tbody>
+                                {% for user in user_list %}
+                                    <tr>
+                                        <td>
+                                            <div class="rounded-circle" style="width: 28px; height: 28px; background-color: #007bff; color: #fff; text-align: center; line-height: 28px; font-weight: bold;">
+                                                {{ user.fullname|first|upper }}
+                                            </div> 
+                                            <h2> {{user.fullname}} </h2>
+                                        </td>
+                                        <td> {{user.email}} </td>
+                                        {% if user.status == 'active' %}
+                                            <td><button class="btn btn-outline-success take-btn"> {{user.status}} </button></td>
+                                        {% else %}
+                                            <td><button class="btn btn-outline-danger take-btn"> {{user.status}} </button></td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

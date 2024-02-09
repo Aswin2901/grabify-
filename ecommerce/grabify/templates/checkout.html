@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<style>
+    /* Add a border to the form */
+    form {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .error {
+        color: red;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Add padding to input fields */
+    form div {
+        margin-bottom: 10px;
+    }
+
+    form label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    form input {
+        width: 100%; /* Adjust the width as needed */
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        display: inline-block;
+    }
+
+    /* Additional styles for the submit button */
+    form button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
+
+<!--Body Content-->
+<div id="page-content">
+    <!--Page Title-->
+    <div class="page section-header text-center">
+        <div class="page-title">
+            <div class="wrapper"><h1 class="page-width">Checkout</h1></div>
+          </div>
+    </div>
+    <!--End Page Title-->
+    
+    <div class="container">
+        {% if error_flag %}
+            <div class="alert alert-danger">
+                {{ error_message }}
+            </div>
+
+        {% elif success_flag %}
+            <div class="alert alert-success">
+                {{ success_message }}
+            </div>
+        {% endif %}
+        <div class="row">
+            
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+                <div class="customer-box returning-customer">
+                    <h3><i class="icon anm anm-user-al"></i> Returning customer? <a href="{% url 'cart_management' %}" id="customer" class="text-white text-decoration-underline">Click here to cart</a></h3>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+                <div class="customer-box customer-coupon">
+                    <h3 class="font-15 xs-font-13"><i class="icon anm anm-gift-l"></i> Have a coupon? <a href="#have-coupon" class="text-white text-decoration-underline" data-toggle="collapse">Click here to enter your code</a></h3>
+                    <div id="have-coupon" class="collapse coupon-checkout-content">
+                        <div class="discount-coupon">
+                            <div id="coupon" class="coupon-dec tab-pane active">
+                                <p class="margin-10px-bottom">Enter your coupon code if you have one.</p>
+                                <label class="required get" for="coupon-code"><span class="required-f">*</span> Coupon</label>
+                                <input id="coupon-code" required="" type="text" class="mb-3">
+                                <button class="coupon-btn btn" type="submit">Apply Coupon</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row billing-fields">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
+                <div class="create-ac-content bg-light-gray padding-20px-all">
+                    {% if user_addresses %}
+                        <form id="addressForm">
+                            <h2 class="login-title mb-3">Select Your Address</h2>
+                            <ul style="list-style-type: none; padding: 0; width: 300px;">
+                                {% for address in user_addresses %}
+                                <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                                    <input type="radio" name="selected_address" id="{{ address.id }}" value="{{ address.id }}" style="margin-right: 10px; width: 15px; height: 15px;" onchange="updateSelectedAddress(this)" {% if address.id == new_address.id %} checked {% endif %}>
+                                    <label for="{{ address.id }}" style="font-size: 16px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+                                        <div>{{ address.first_name }}</div>
+                                        <div>{{ address.address_1 }}</div>
+                                    </label>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </form>
+
+                        <script>
+                            var selectedAddressId;
+
+                            function updateSelectedAddress(radioButton) {
+                                if (radioButton.checked) {
+                                    selectedAddressId = radioButton.value;
+                                    console.log("Selected Address ID: " + selectedAddressId);
+                                    // You can use the selectedAddressId variable as needed.
+                                }
+                            }
+                        </script>
+                    {% endif %} 
+                    <br>
+                    <h2 class="login-title mb-3">Or create new address</h2>
+                    <br>
+                    <form method="post" action="{% url 'submit_address' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_first_name">First Name <span class="required-f">*</span></label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <p class="error">{{ form.first_name.errors }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_last_name">Last Name <span class="required-f">*</span></label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <p class="error">{{ form.last_name.errors }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_email">E-Mail <span class="required-f">*</span></label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <p class="error">{{ form.email.errors }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_telephone">Telephone <span class="required-f">*</span></label>
+                                {{ form.telephone }}
+                                {% if form.telephone.errors %}
+                                    <p class="error">{{ form.telephone.errors }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6">
+                                <label for="id_company">Company</label>
+                                {{ form.company }}
+                                {% if form.company.errors %}
+                                    <p class="error">{{ form.company.errors }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_address_1">Address <span class="required-f">*</span></label>
+                                {{ form.address_1 }}
+                                {% if form.address_1.errors %}
+                                    <p class="error">{{ form.address_1.errors }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_city">City <span class="required-f">*</span></label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <p class="error">{{ form.city.errors }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_postcode">Post Code <span class="required-f">*</span></label>
+                                {{ form.postcode }}
+                                {% if form.postcode.errors %}
+                                    <p class="error">{{ form.postcode.errors }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_country">Country <span class="required-f">*</span></label>
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                    <p class="error">{{ form.country.errors }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                <label for="id_region">Region / State <span class="required-f">*</span></label>
+                                {{ form.region }}
+                                {% if form.region.errors %}
+                                    <p class="error">{{ form.region.errors }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12 col-lg-12 col-xl-12 text-center">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                <div class="your-order-payment">
+                    <div class="your-order">
+                        <h2 class="order-title mb-4">Your Order</h2>
+
+                        <div class="table-responsive-sm order-table"> 
+                            <table class="bg-white table table-bordered table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left">Product Name</th>
+                                        <th>Price</th>
+                                        <th>Qty</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for cart_item in cart_items %}
+                                    <tr>
+                                        <td class="text-left">{{cart_item.product.name}} </td>
+                                        <td>${{cart_item.product.price}} </td>
+                                        <td>{{cart_item.quantity}} </td>
+                                        <td>${{cart_item.total}} </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="font-weight-600">
+                                    <tr>
+                                        <td colspan="4" class="text-right">Shipping </td>
+                                        <td>$50.00</td>
+                                    </tr>
+                                    <tr>
+                                        {% if offer_price != 0 %}
+                                            <td colspan="4" class="text-right">Offer Price</td>
+                                            <td>-${{ offer_price }}</td>
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-right">Total</td>
+                                        <td>${{ total_sum|add:50 }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <hr />
+
+                    <div class="your-payment">
+                        <div class="payment-method">
+                            <div class="payment-accordion">
+                                <div id="accordion" class="payment-section">
+                                    <h2 class="payment-title mb-3">Payment Method</h2>
+                                    <form method="post" action="{% url 'checkout' %}">
+                                        {% csrf_token %}                        
+                                        <ul style="list-style-type: none; padding: 0; width: 300px;">
+                                            <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                                                <input type="radio" name="payment_option" id="cash_on_delivery" value="cash_on_delivery" style="margin-right: 10px; width: 15px; height: 15px;">
+                                                <label for="cash_on_delivery" style="font-size: 16px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+                                                    <h3>Cash On Delivery</h3>
+                                                    <p>You can pay cash after receiving the product</p>
+                                                </label>
+                                            </li>
+                                            <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                                                <input type="radio" name="payment_option" id="online_payment" value="online_payment" style="margin-right: 10px; width: 15px; height: 15px;">
+                                                <label for="cash_on_delivery" style="font-size: 16px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+                                                    <h3>Online Payment</h3>
+                                                    <p>You can pay using paypal</p>
+                                                </label>
+                                            </li>
+                                            
+                                        </ul>
+                                        <input type="hidden" name="selectedAddressId" id="selectedAddressId" value="">
+                                        <div class="form-group col-md-12 col-lg-12 col-xl-12 text-center">
+                                            <button type="submit" class="btn btn-primary">Place Your Order</button>
+                                        </div>
+                                    </form>
+                                    <script>
+                                        var selectedAddressId;
+                                    
+                                        function updateSelectedAddress(radioButton) {
+                                            if (radioButton.checked) {
+                                                selectedAddressId = radioButton.value;
+                                                console.log("Selected Address ID: " + selectedAddressId);
+                                                // Update the hidden input value
+                                                document.getElementById('selectedAddressId').value = selectedAddressId;
+                                            }
+                                        }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<!--End Body Content-->
+
+
+
+{% endblock body %}
+

@@ -1,0 +1,79 @@
+{% extends "admin_base.html" %}
+{% block body %}
+{% load static %}
+<div class="content">
+    <div class="row">
+        <div class="col-sm-4 col-3">
+            <h4 class="page-title">Category List</h4>
+        </div>
+        <div class="col-sm-8 col-9 text-right m-b-20">
+            <a href="{% url 'custom_admin:add_category' %}" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Add Category</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-border table-striped custom-table datatable mb-0">
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>{{category.name}}</td>
+                                <td>{{category.description}}</td>
+                                <td style="background-color: {% if category.status == 'active' %}#00FF40 {% else %}red{% endif %}; color: white;">
+                                    {{ category.status }}
+                                </td>
+                                <td class="text-right">
+                                    <div class="dropdown dropdown-action">
+                                        <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="{% url 'custom_admin:edit_category' category.id %}?edit_mode=true"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                            {% if category.status == 'inactive' %}
+                                                <a href="{% url 'custom_admin:activate_category' category.id %}" class="dropdown-item"><i class="fa fa-check m-r-5"></i>Activate</a>
+                                            {% else %}
+                                                <a href="{% url 'custom_admin:deactivate_category' category.id %}" class="dropdown-item"><i class="fa fa-close m-r-5"></i>Deactivate</a>
+                                            {% endif %}
+                                            </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Category Modal -->
+    {% for category in categories %}
+    <div class="modal fade" id="delete_category{{ category.id }}" tabindex="-1" role="dialog" aria-labelledby="delete_category{{ category.id }}Label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delete_category{{ category.id }}Label">Delete Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the category "{{ category.name }}"?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <!-- End Delete Category Modal -->
+</div>
+
+{% endblock body %}
+

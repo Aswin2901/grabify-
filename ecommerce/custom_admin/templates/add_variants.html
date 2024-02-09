@@ -1,0 +1,29 @@
+{% extends "admin_base.html" %}
+{% block body %}
+{% load static %}
+{% load static custom_filters %}
+<div class="content">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h4 class="page-title">Add Variants</h4>
+        </div>
+    </div>
+    <form method="post" action="{% url 'custom_admin:add_variants' product.id %}">
+        {% csrf_token %}
+        {% for size_choice in SIZE_CHOICES %}
+            <div class="variant-row">
+                <label for="id_size_{{ size_choice.0 }}">{{ size_choice.1 }}:</label>
+                <input 
+                    type="number" 
+                    name="quantity_{{ size_choice.0 }}" 
+                    id="id_quantity_{{ size_choice.0 }}" 
+                    placeholder="Quantity" 
+                    class="form-control" 
+                    style="width: 300px; margin-bottom:10px;"  
+                >
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

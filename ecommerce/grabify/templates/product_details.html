@@ -1,0 +1,491 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<style>
+    #pa_size {
+        width: 150px; 
+        height: 30px; 
+    }
+</style>
+<!--Body Content-->
+<div id="page-content">
+    <!--MainContent-->
+    <div id="MainContent" class="main-content" role="main">
+        <!--Breadcrumb-->
+        <div class="bredcrumbWrap">
+            <div class="container breadcrumbs">
+                <a href="{% url 'index' %}" title="Back to the home page">Home</a><span aria-hidden="true">›</span><span> {{product.name}} </span>
+            </div>
+        </div>
+        <!--End Breadcrumb-->
+        
+        <div id="ProductSection-product-template" class="product-template__container prstyle1 container">
+            <!--product-single-->
+            <div class="product-single" style="padding-bottom: 50px">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="product-details-img">
+                            <div class="product-thumb">
+                                <div id="gallery" class="product-dec-slider-2 product-tab-left">
+                                    {% for variant_image in variant_images %}
+                                        {% if variant_image.image %}
+                                            <a data-image="{{ variant_image.image.url }}" data-zoom-image="{{ variant_image.image.url }}" class="thumbnail slick-slide slick-cloned">
+                                                <img class="blur-up lazyload" src="{{ variant_image.image.url }}" alt="" width="100%" style="display: inline-block;">
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+            
+                            <div class="zoompro-wrap product-zoom-right pl-20">
+                                <div class="zoompro-span">
+                                    <img class="zoompro blur-up lazyload" 
+                                        id="zoomed-image" 
+                                        data-zoom-image="{{ product.image.url }}" 
+                                        alt="" 
+                                        src="{{ product.image.url }}" 
+                                        style="transform: translatez(0px); position: absolute; left: 0px; top:0px; height: 560px; width: 480.344px;">
+                                </div>
+                                
+                                <div class="product-labels"><span class="lbl pr-label3">Popular</span></div>
+                            </div>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    var thumbnails = document.querySelectorAll('.thumbnail');
+                                
+                                    thumbnails.forEach(function(thumbnail) {
+                                        thumbnail.addEventListener('click', function() {
+                                            var zoomedImageUrl = thumbnail.getAttribute('data-zoom-image');
+                                            var zoomedImg = document.getElementById('zoomed-image');
+                                            zoomedImg.setAttribute('data-zoom-image', zoomedImageUrl);
+                                            zoomedImg.setAttribute('src', zoomedImageUrl);
+                                        });
+                                    });
+                                });
+                            </script>
+                            <div class="lightboximages">
+                                <a href="{% static "grabify/images/product-detail-page/product-labels1.jpg" %}" data-size="1462x2048"></a>
+                                <a href="{% static "grabify/images/product-detail-page/product-labels2.jpg" %}" data-size="1462x2048"></a>
+                                <a href="{% static "grabify/images/product-detail-page/product-labels4.jpg" %}" data-size="1462x2048"></a>
+                                <a href="{% static "grabify/images/product-detail-page/product-labels5.jpg" %}" data-size="1462x2048"></a>
+                                <a href="{% static "grabify/images/product-detail-page/product-labels6.jpg" %}" data-size="1462x2048"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="product-single__meta">
+                            <h1 class="product-single__title"> {{product.name}} </h1>
+                            <div class="product-nav clearfix">					
+                                <a href="#" class="next" title="Next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="prInfoRow">
+                                <div class="product-stock"> <span class="instock ">In Stock</span> <span class="outstock hide">Unavailable</span> </div>
+                                <div class="product-sku">SKU: <span class="variant-sku">19115-rdxs</span></div>
+                                <div class="product-review"><a class="reviewLink" href="#tab2"><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><span class="spr-badge-caption">6 reviews</span></a></div>
+                            </div>
+                            <p class="product-single__price product-single__price-product-template">
+                                <span class="visually-hidden">Regular price</span>
+                                {% if offer and offer.category == product.category %}
+                                    <s id="ComparePrice-product-template">
+                                        <span class="money">{{ product.price }}</span>
+                                    </s>
+                                {% endif %}
+                                {% if offer and offer.category == product.category %}
+                                    <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
+                                        <span id="ProductPrice-product-template">
+                                            <span class="money">{{ offer_price }} </span>
+                                        </span>
+                                    </span>
+                                    <span class="discount-badge"> <span class="devider">|</span>&nbsp;
+                                        <span>You Save</span>
+                                        <span id="SaveAmount-product-template" class="product-single__save-amount">
+                                        <span class="money">${{ offer.discount_amount }}</span>
+                                        </span>
+                                    </span>  
+                                {% else %}
+                                    <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
+                                        <span id="ProductPrice-product-template">
+                                            <span class="money">${{ product.price }} </span>
+                                        </span>
+                                    </span>
+                                {% endif %}
+                            </p>
+                            
+                        <div class="product-single__description rte">
+                            <ul>
+                                <li> {{product.description}} </li>
+                                <li>Category : {{product.category.name}} </li>
+                            </ul>
+                        </div>
+                        {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        {% if error_flag %}
+                                <div class="alert alert-danger">
+                                    {{ error_message }}
+                                </div>
+
+                        {% elif success_flag %}
+                                <div class="alert alert-success">
+                                    {{ success_message }}
+                                </div>
+                        {% endif %}
+                        <form method="post" action="{% url 'add_to_cart' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            {% if offer %}
+                                <input type="hidden" name="offer_price" value="{{ offer_price }}">
+                            {% endif %}
+                            <p class="infolinks">
+                                <a href="#sizechart" class="sizelink btn"> Size Guide</a>
+                                <a href="#productInquiry" class="emaillink btn"> Ask About this Product</a>
+                                
+                                <div class="product-stock">
+                                    <select id="pa_size" class="" name="attribute_pa_size" data-attribute_name="attribute_pa_size">
+                                        <option value="">choose size</option>
+                                        <option value="XS">XS</option>
+                                        <option value="S">S</option>
+                                        <option value="M">M</option>
+                                        <option value="L">L</option>
+                                        <option value="XL">XL</option>
+                                        <option value="XXL">XXL</option>
+                                    </select>
+                                    <span id="stock_status" class="stock-status" style="color:green;">In Stock</span>
+                                    <span id="quantity" class="instock" style="color:green;">{{ product.quantity }} pieces</span>
+                                </div>
+
+                                <script>
+                                    document.getElementById('pa_size').addEventListener('change', function() {
+                                        var selectedSize = this.value;
+                                        var variantQuantities = {
+                                            {% for variant in variant_images %}
+                                                "{{ variant.size }}": {{ variant.quantity }},
+                                            {% endfor %}
+                                        };
+                                
+                                        if (selectedSize && variantQuantities[selectedSize] !== undefined) {
+                                            var quantity = variantQuantities[selectedSize];
+                                            var is_out_of_stock = quantity === 0;
+                                            updateStockStatus(quantity, is_out_of_stock);
+                                        } else {
+                                            updateStockStatus({{ product.quantity }}, false);
+                                        }
+                                    });
+                                
+                                    function updateStockStatus(quantity, is_out_of_stock) {
+                                        var stockElement = document.getElementById('stock_status');
+                                        var quantityElement = document.getElementById('quantity');
+                                
+                                        if (is_out_of_stock) {
+                                            stockElement.textContent = "Out of Stock";
+                                            stockElement.style.color = "red";
+                                            quantityElement.textContent = "";
+                                        } else {
+                                            stockElement.textContent = "In Stock";
+                                            stockElement.style.color = "green";
+                                            quantityElement.textContent = quantity + " pieces";
+                                        }
+                                    }
+                                </script>
+                            </p>
+                            
+                            <div class="product-action clearfix">
+                                <div class="product-form__item--quantity">
+                                    <div class="wrapQtyBtn">
+                                        <div class="qtyField">
+                                            <a class="qtyBtn minus"><i class="fa anm anm-minus-r" aria-hidden="true"></i></a>
+                                            <input type="text" id="Quantity" name="quantity" value="1" class="product-form__input qty">
+                                            <a class="qtyBtn plus"><i class="fa anm anm-plus-r" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                </div>                     
+                                <div class="product-form__item--submit">
+                                    <button type="submit" name="add" class="btn product-form__cart-submit">
+                                        <span>Add to Cart</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="display-table shareRow">
+                            <div class="display-table-cell medium-up--one-third">
+                                <div class="wishlist-btn">
+                                    <a class="wishlist add-to-wishlist" href="{% url 'add_to_wishlist' product_id=product.id %}" title="Add to Wishlist">
+                                        <i class="icon anm anm-heart-l" aria-hidden="true"></i>
+                                        <span>Add to Wishlist</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="display-table-cell text-right">
+                                <div class="social-sharing">
+                                    <a target="_blank" href="#" class="btn btn--small btn--secondary btn--share share-facebook" title="Share on Facebook">
+                                        <i class="fa fa-facebook-square" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Share</span>
+                                    </a>
+                                    <a target="_blank" href="#" class="btn btn--small btn--secondary btn--share share-twitter" title="Tweet on Twitter">
+                                        <i class="fa fa-twitter" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Tweet</span>
+                                    </a>
+                                    <a href="#" title="Share on google+" class="btn btn--small btn--secondary btn--share" >
+                                        <i class="fa fa-google-plus" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Google+</span>
+                                    </a>
+                                    <a target="_blank" href="#" class="btn btn--small btn--secondary btn--share share-pinterest" title="Pin on Pinterest">
+                                        <i class="fa fa-pinterest" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Pin it</span>
+                                    </a>
+                                    <a href="#" class="btn btn--small btn--secondary btn--share share-pinterest" title="Share by Email" target="_blank">
+                                        <i class="fa fa-envelope" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Email</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p id="freeShipMsg" class="freeShipMsg" data-price="199"><i class="fa fa-truck" aria-hidden="true"></i> GETTING CLOSER! ONLY <b class="freeShip"><span class="money" data-currency-usd="$199.00" data-currency="USD">$199.00</span></b> AWAY FROM <b>FREE SHIPPING!</b></p>
+                        <p class="shippingMsg"><i class="fa fa-clock-o" aria-hidden="true"></i> ESTIMATED DELIVERY BETWEEN <b id="fromDate">Wed. May 1</b> and <b id="toDate">Tue. May 7</b>.</p>
+                        <div class="userViewMsg" data-user="20" data-time="11000"><i class="fa fa-users" aria-hidden="true"></i> <strong class="uersView">14</strong> PEOPLE ARE LOOKING FOR THIS PRODUCT</div>
+                    </div>
+                </div>
+            </div>
+            <!--Product Fearure-->
+            <div class="prFeatures" style="margin-top: 20px;">
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
+                        <img src="{% static "grabify/images/credit-card.png" %}" alt="Safe Payment" title="Safe Payment" />
+                        <div class="details"><h3>Safe Payment</h3>Pay with the world's most payment methods.</div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
+                        <img src="{% static "grabify/images/shield.png" %}" alt="Confidence" title="Confidence" />
+                        <div class="details"><h3>Confidence</h3>Protection covers your purchase and personal data.</div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
+                        <img src="{% static "grabify/images/worldwide.png" %}" alt="Worldwide Delivery" title="Worldwide Delivery" />
+                        <div class="details"><h3>Worldwide Delivery</h3>FREE &amp; fast shipping to over 200+ countries &amp; regions.</div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
+                        <img src="{% static "grabify/images/phone-call.png" %}" alt="Hotline" title="Hotline" />
+                        <div class="details"><h3>Hotline</h3>Talk to help line for your question on 4141 456 789, 4125 666 888</div>
+                    </div>
+                </div>
+            </div>
+            <!--End Product Fearure-->
+            <!--Product Tabs-->
+            <div class="tabs-listing">
+                <ul class="product-tabs">
+                    <li rel="tab1"><a class="tablink">Product Details</a></li>
+                    <li rel="tab2"><a class="tablink">Product Reviews</a></li>
+                    <li rel="tab3"><a class="tablink">Size Chart</a></li>
+                    <li rel="tab4"><a class="tablink">Shipping &amp; Returns</a></li>
+                </ul>
+                <div class="tab-container">
+                    <div id="tab1" class="tab-content">
+                        <div class="product-description rte">
+                            <p> {{ product.description }} </p>
+                        </div>
+                    </div>
+                    
+                    <div id="tab2" class="tab-content">
+                        <div id="shopify-product-reviews">
+                            <div class="spr-container">
+                                <div class="spr-header clearfix">
+                                    <div class="spr-summary">
+                                        <span class="product-review"><a class="reviewLink"><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i> </a><span class="spr-summary-actions-togglereviews">Based on 6 reviews456</span></span>
+                                        <span class="spr-summary-actions">
+                                            <a href="#" class="spr-summary-actions-newreview btn">Write a review</a>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="spr-content">
+                                    <div class="spr-form clearfix">
+                                        <form method="post" action="#" id="new-review-form" class="new-review-form">
+                                            <h3 class="spr-form-title">Write a review</h3>
+                                            <fieldset class="spr-form-contact">
+                                                <div class="spr-form-contact-name">
+                                                  <label class="spr-form-label" for="review_author_10508262282">Name</label>
+                                                  <input class="spr-form-input spr-form-input-text " id="review_author_10508262282" type="text" name="review[author]" value="" placeholder="Enter your name">
+                                                </div>
+                                                <div class="spr-form-contact-email">
+                                                  <label class="spr-form-label" for="review_email_10508262282">Email</label>
+                                                  <input class="spr-form-input spr-form-input-email " id="review_email_10508262282" type="email" name="review[email]" value="" placeholder="john.smith@example.com">
+                                                </div>
+                                            </fieldset>
+                                            <fieldset class="spr-form-review">
+                                              <div class="spr-form-review-rating">
+                                                <label class="spr-form-label">Rating</label>
+                                                <div class="spr-form-input spr-starrating">
+                                                  <div class="product-review"><a class="reviewLink" href="#"><i class="fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i></a></div>
+                                                </div>
+                                              </div>
+                                        
+                                              <div class="spr-form-review-title">
+                                                <label class="spr-form-label" for="review_title_10508262282">Review Title</label>
+                                                <input class="spr-form-input spr-form-input-text " id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title">
+                                              </div>
+                                        
+                                              <div class="spr-form-review-body">
+                                                <label class="spr-form-label" for="review_body_10508262282">Body of Review <span class="spr-form-review-body-charactersremaining">(1500)</span></label>
+                                                <div class="spr-form-input">
+                                                  <textarea class="spr-form-input spr-form-input-textarea " id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here"></textarea>
+                                                </div>
+                                              </div>
+                                            </fieldset>
+                                            <fieldset class="spr-form-actions">
+                                                <input type="submit" class="spr-button spr-button-primary button button-primary btn btn-primary" value="Submit Review">
+                                            </fieldset>
+                                        </form>
+                                    </div>
+                                    <div class="spr-reviews">
+                                        <div class="spr-review">
+                                            <div class="spr-review-header">
+                                                <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
+                                                <h3 class="spr-review-header-title">Lorem ipsum dolor sit amet</h3>
+                                                <span class="spr-review-header-byline"><strong>dsacc</strong> on <strong>Apr 09, 2019</strong></span>
+                                            </div>
+                                            <div class="spr-review-content">
+                                                <p class="spr-review-content-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                            </div>
+                                        </div>
+                                        <div class="spr-review">
+                                          <div class="spr-review-header">
+                                            <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
+                                            <h3 class="spr-review-header-title">Lorem Ipsum is simply dummy text of the printing</h3>
+                                            <span class="spr-review-header-byline"><strong>larrydude</strong> on <strong>Dec 30, 2018</strong></span>
+                                          </div>
+                                    
+                                          <div class="spr-review-content">
+                                            <p class="spr-review-content-body">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+                                            </p>
+                                          </div>
+                                        </div>
+                                        <div class="spr-review">
+                                          <div class="spr-review-header">
+                                            <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
+                                            <h3 class="spr-review-header-title">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</h3>
+                                            <span class="spr-review-header-byline"><strong>quoctri1905</strong> on <strong>Dec 30, 2018</strong></span>
+                                          </div>
+                                    
+                                          <div class="spr-review-content">
+                                            <p class="spr-review-content-body">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.<br>
+                                            <br>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <div id="tab3" class="tab-content">
+                        <h3>WOMEN'S BODY SIZING CHART</h3>
+                        <table>
+                          <tbody>
+                            <tr>
+                              <th>Size</th>
+                              <th>XS</th>
+                              <th>S</th>
+                              <th>M</th>
+                              <th>L</th>
+                              <th>XL</th>
+                            </tr>
+                            <tr>
+                              <td>Chest</td>
+                              <td>31" - 33"</td>
+                              <td>33" - 35"</td>
+                              <td>35" - 37"</td>
+                              <td>37" - 39"</td>
+                              <td>39" - 42"</td>
+                            </tr>
+                            <tr>
+                              <td>Waist</td>
+                              <td>24" - 26"</td>
+                              <td>26" - 28"</td>
+                              <td>28" - 30"</td>
+                              <td>30" - 32"</td>
+                              <td>32" - 35"</td>
+                            </tr>
+                            <tr>
+                              <td>Hip</td>
+                              <td>34" - 36"</td>
+                              <td>36" - 38"</td>
+                              <td>38" - 40"</td>
+                              <td>40" - 42"</td>
+                              <td>42" - 44"</td>
+                            </tr>
+                            <tr>
+                              <td>Regular inseam</td>
+                              <td>30"</td>
+                              <td>30½"</td>
+                              <td>31"</td>
+                              <td>31½"</td>
+                              <td>32"</td>
+                            </tr>
+                            <tr>
+                              <td>Long (Tall) Inseam</td>
+                              <td>31½"</td>
+                              <td>32"</td>
+                              <td>32½"</td>
+                              <td>33"</td>
+                              <td>33½"</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <h3>MEN'S BODY SIZING CHART</h3>
+                        <table>
+                          <tbody>
+                            <tr>
+                              <th>Size</th>
+                              <th>XS</th>
+                              <th>S</th>
+                              <th>M</th>
+                              <th>L</th>
+                              <th>XL</th>
+                              <th>XXL</th>
+                            </tr>
+                            <tr>
+                              <td>Chest</td>
+                              <td>33" - 36"</td>
+                              <td>36" - 39"</td>
+                              <td>39" - 41"</td>
+                              <td>41" - 43"</td>
+                              <td>43" - 46"</td>
+                              <td>46" - 49"</td>
+                            </tr>
+                            <tr>
+                              <td>Waist</td>
+                              <td>27" - 30"</td>
+                              <td>30" - 33"</td>
+                              <td>33" - 35"</td>
+                              <td>36" - 38"</td>
+                              <td>38" - 42"</td>
+                              <td>42" - 45"</td>
+                            </tr>
+                            <tr>
+                              <td>Hip</td>
+                              <td>33" - 36"</td>
+                              <td>36" - 39"</td>
+                              <td>39" - 41"</td>
+                              <td>41" - 43"</td>
+                              <td>43" - 46"</td>
+                              <td>46" - 49"</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div class="text-center">
+                            <img src="{% static "images/size.jpg" %}" alt="" />
+                        </div>
+                  </div>
+                    
+                    <div id="tab4" class="tab-content">
+                        <h4>Returns Policy</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eros justo, accumsan non dui sit amet. Phasellus semper volutpat mi sed imperdiet. Ut odio lectus, vulputate non ex non, mattis sollicitudin purus. Mauris consequat justo a enim interdum, in consequat dolor accumsan. Nulla iaculis diam purus, ut vehicula leo efficitur at.</p>
+                        <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. In blandit nunc enim, sit amet pharetra erat aliquet ac.</p>
+                        <h4>Shipping</h4>
+                        <p>Pellentesque ultrices ut sem sit amet lacinia. Sed nisi dui, ultrices ut turpis pulvinar. Sed fringilla ex eget lorem consectetur, consectetur blandit lacus varius. Duis vel scelerisque elit, et vestibulum metus.  Integer sit amet tincidunt tortor. Ut lacinia ullamcorper massa, a fermentum arcu vehicula ut. Ut efficitur faucibus dui Nullam tristique dolor eget turpis consequat varius. Quisque a interdum augue. Nam ut nibh mauris.</p>
+                    </div>
+                </div>
+            </div>
+            <!--End Product Tabs-->
+        </div>
+    <!--MainContent-->
+</div>
+<!--End Body Content-->
+{% endblock %}

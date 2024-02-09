@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<!--Body Content-->
+<div id="page-content">
+    <!--Collection Banner-->
+    <div class="collection-header">
+        <div class="collection-hero">
+            <div class="collection-hero__image"><img class="blur-up lazyload" data-src="{% static "grabify/images/cat-women2.jpg" %}" src="{% static "grabify/images/cat-women2.jpg" %}" alt="Women" title="Women" /></div>
+            <div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">ENJOY YOU'R SHOPPING</h1></div>
+          </div>
+    </div>
+    <!--End Collection Banner-->
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!--Sidebar-->
+            <div class="col-12 col-sm-12 col-md-3 col-lg-2 sidebar filterbar" style="margin-top: 20px">
+                <div class="closeFilter d-block d-md-none d-lg-none"><i class="icon icon anm anm-times-l"></i></div>
+                <div class="sidebar_tags">
+                    <!--Categories-->
+                    <div class="sidebar_widget categories filter-widget">
+                        <div class="widget-title"><h2>Categories</h2></div>
+                        <div class="widget-content">
+                            <ul class="sidebar_categories">
+                                <li class="level1 sub-level"><a href="#" class="site-nav">Clothing</a>
+                                    <ul class="sublinks">
+                                        <li class="level2"><a href="{% url 'filter_products' %}?category=Men" class="site-nav">Men's</a></li>
+                                        <li class="level2"><a href="{% url 'filter_products' %}?category=Female" class="site-nav">Women</a></li>
+                                        <li class="level2"><a href="{% url 'filter_products' %}?category=Kids" class="site-nav">Child</a></li>
+                                        <li class="level2"><a href="{% url 'filter_products' %}" class="site-nav">View All Clothing</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--End Categories-->
+                    <!--Price Filter-->
+                    <div class="sidebar_widget filterBox filter-widget">
+                        <div class="widget-title">
+                            <h2>Price</h2>
+                        </div>
+                        <form action="{% url 'filter_products' %}" method="get" class="price-filter text-center">
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <p class="no-margin">
+                                        <label for="min_price">Min Price:</label>
+                                        <input id="min_price" name="min_price" type="text" value="{{ request.GET.min_price }}">
+                                    </p>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <p class="no-margin">
+                                        <label for="max_price">Max Price:</label>
+                                        <input id="max_price" name="max_price" type="text" value="{{ request.GET.max_price }}">
+                                    </p>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <button type="submit" class="btn btn-secondary btn--small">Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!--End Price Filter-->
+                    <!--Information-->
+                    <div class="sidebar_widget">
+                        <div class="widget-title"><h2>Information</h2></div>
+                        <div class="widget-content"><p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p></div>
+                    </div>
+                    <!--End Information-->
+                    <!--Product Tags-->
+                    <div class="sidebar_widget">
+                        <div class="widget-title">
+                            <h2>Product Tags</h2>
+                        </div>
+                        <div class="widget-content">
+                            <ul class="product-tags">
+                                <!-- Your product tags list goes here -->
+                            </ul>
+                            <span class="btn btn--small btnview">View all</span>
+                        </div>
+                    </div>
+                    <!--End Product Tags-->
+                </div>
+            </div>
+            <!--End Sidebar-->
+            <!--Main Content-->
+            <div class="col-12 col-sm-12 col-md-9 col-lg-10 main-col">
+                <div class="productList" style = "margin-top : 20px">
+                    <!--Toolbar-->
+                    <button type="button" class="btn btn-filter d-block d-md-none d-lg-none"> Product Filters</button>
+                    <div class="toolbar">
+                        <div class="filters-toolbar-wrapper">
+                            <div class="row">
+                                <div class="col-4 col-md-4 col-lg-4 filters-toolbar__item collection-view-as d-flex justify-content-start align-items-center">
+                                    <a href="{% url 'shop_lap_list' %}" title="Grid View" class="change-view change-view--active">
+                                        <img src="{% static "grabify/images/grid.jpg" %}" alt="Grid" />
+                                    </a>
+                                    <a href="{% url 'shop_mobile_list' %}" title="List View" class="change-view">
+                                        <img src="{% static "grabify/images/list.jpg" %}" alt="List" />
+                                    </a>
+                                </div>
+                                <div class="col-4 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
+                                    <span class="filters-toolbar__product-count"></span>
+                                </div>
+                                <div class="col-4 col-md-4 col-lg-4 text-right">
+                                    <div class="filters-toolbar__item">
+                                          <label for="SortBy" class="hidden">Sort</label>
+                                          <select name="SortBy" id="SortBy" class="filters-toolbar__input filters-toolbar__input--sort">
+                                            <option value="title-ascending" selected="selected">Sort</option>
+                                            <option>Best Selling</option>
+                                            <option>Alphabetically, A-Z</option>
+                                            <option>Alphabetically, Z-A</option>
+                                            <option>Price, low to high</option>
+                                            <option>Price, high to low</option>
+                                            <option>Date, new to old</option>
+                                            <option>Date, old to new</option>
+                                          </select>
+                                          <input class="collection-header__default-sort" type="hidden" value="manual">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--End Toolbar-->
+                    <div class="grid-products grid--view-items">
+                        <div class="row">
+                            {% for product in products %}
+                                {% if product.status != 'inactive' %}
+                    
+                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 grid-view-item style2 item">
+                                        <div class="grid-view_image">
+                                            <!-- start product image -->
+                                            <a href="/product_details/{{ product.id }}" class="grid-view-item__link">
+                                                <!-- image -->
+                                                <img class="grid-view-item__image primary blur-up lazyload" data-src="{{ product.image.url }}" src="{{ product.image.url }}" alt="{{ product.name }}" title="{{ product.name }}">
+                                                <!-- End image -->
+                                                <!-- Hover image -->
+                                                <img class="grid-view-item__image hover blur-up lazyload" data-src="{{ product.hover_image.url }}" src="{{ product.hover_image.url }}" alt="{{ product.name }}" title="{{ product.name }}">
+                                                <!-- End hover image -->
+                                                <!-- product label -->
+                                                <div class="product-labels rectangular">
+                                                    {% if product.discount_percentage %}
+                                                        <span class="lbl on-sale">-{{ product.discount_percentage }}%</span>
+                                                    {% endif %}
+                                                    {% if product.is_new %}
+                                                        <span class="lbl pr-label1">new</span>
+                                                    {% endif %}
+                                                </div>
+                                                <!-- End product label -->
+                                            </a>
+                                            <!-- end product image -->
+                    
+                                            <!--start product details -->
+                                            <div class="product-details hoverDetails text-center mobile">
+                                                <!-- product name -->
+                                                <div class="product-name">
+                                                    <a href="/product_details/{{ product.id }}">{{ product.name }}</a>
+                                                </div>
+                                                <!-- End product name -->
+                                                <!-- product price -->
+                                                <div class="product-price">
+                                                    <span class="price">${{ product.price }}</span>
+                                                </div>
+                                                <!-- End product price -->
+                                                <div class="product-review">
+                                                    <!-- Add your rating logic here -->
+                                                </div>
+                                                <!-- product button -->
+                                                <div class="button-set">
+                                                    <a href="/product_details/{{ product.id }}" title="Quick View" class="quick-view-popup quick-view" tabindex="0">
+                                                        <i class="icon anm anm-search-plus-r"></i>
+                                                    </a>
+                                                    <!-- Start product button -->
+                                                    <form action="#" method="post">
+                                                        <button class="btn btn--secondary cartIcon btn-addto-cart" type="button"><i class="icon anm anm-bag-l"></i></button>
+                                                    </form>
+                                                    <div class="wishlist-btn">
+                                                        <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist">
+                                                            <i class="icon anm anm-heart-l"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="compare-btn">
+                                                        <a class="compare add-to-compare" href="compare.html" title="Add to Compare">
+                                                            <i class="icon anm anm-random-r"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- end product button -->
+                                            </div>
+                                            <!-- End product details -->
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    
+                        <!-- Pagination controls -->
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if products.has_previous %}
+                                    <a href="?page=1">&laquo; first</a>
+                                    <a href="?page={{ products.previous_page_number }}">previous</a>
+                                {% endif %}
+                    
+                                <span class="current">
+                                    Page {{ products.number }} of {{ products.paginator.num_pages }}.
+                                </span>
+                    
+                                {% if products.has_next %}
+                                    <a href="?page={{ products.next_page_number }}">next</a>
+                                    <a href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                </div>
+            </div>
+            <!--End Main Content-->
+        </div>
+    </div>
+</div>
+<!--End Body Content-->
+
+{% endblock body %}

@@ -1,0 +1,73 @@
+{% extends "admin_base.html" %}
+{% block body %}
+{% load static %}
+<div class="content">
+    <div class="row">
+        <div class="col-sm-4 col-3">
+            <h4 class="page-title">Users</h4>
+        </div>
+        <div class="col-sm-8 col-9 text-right m-b-20">
+            <a href="#" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Add User</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form method="get" action="{% url 'custom_admin:user_list' %}" class="form-inline mb-3">
+                <div class="form-group mb-2" style="margin-right:5px; height:30px;">
+                    {{ filter_form.status }}
+                </div>
+                <button type="submit" class="btn btn-primary">Apply Filter</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form method="get" action="{% url 'custom_admin:user_list' %}" class="form-inline mb-3">
+                <div class="form-group mb-2">
+                    <input type="text" name="search_query" class="form-control" placeholder="Search...">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-border table-striped custom-table datatable mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in admin_user %}
+                            <tr>
+                                <td>{{user.fullname}}</td>
+                                <td>{{user.email}}</td>
+                                <td class="{% if user.status == 'active' %}text-success{% elif user.status == 'blocked' %}text-danger{% endif %}">{{user.status}}</td>
+                                <td class="text-right">
+                                    <div class="dropdown dropdown-action">
+                                        <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            
+                                            {% if user.status == 'active' %}
+                                                <a class="dropdown-item" href="{% url 'custom_admin:block_user' user.id %}"><i class="fa fa-ban m-r-5"></i> Block</a>
+                                            {% else %}
+                                                <a class="dropdown-item" href="{% url 'custom_admin:unblock_user' user.id %}"><i class="fa fa-check m-r-5"></i> Unblock</a>
+                                            {% endif %}
+                                            
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                            </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
