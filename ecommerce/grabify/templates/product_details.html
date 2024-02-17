@@ -79,7 +79,13 @@
                                 <a href="#" class="next" title="Next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
                             </div>
                             <div class="prInfoRow">
-                                <div class="product-stock"> <span class="instock ">In Stock</span> <span class="outstock hide">Unavailable</span> </div>
+                                <div class="product-stock">
+                                    {% if product.quantity != 0 %}
+                                     <span class="instock ">In Stock</span>
+                                    {% else %}
+                                      <span style = 'color:red;'>Unavailable</span>
+                                    {% endif %}
+                                    </div>
                                 <div class="product-sku">SKU: <span class="variant-sku">19115-rdxs</span></div>
                                 <div class="product-review"><a class="reviewLink" href="#tab2"><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><span class="spr-badge-caption">6 reviews</span></a></div>
                             </div>
@@ -154,8 +160,14 @@
                                         <option value="XL">XL</option>
                                         <option value="XXL">XXL</option>
                                     </select>
-                                    <span id="stock_status" class="stock-status" style="color:green;">In Stock</span>
-                                    <span id="quantity" class="instock" style="color:green;">{{ product.quantity }} pieces</span>
+                                    {% if product.quantity != 0 %}
+                                        <span id="stock_status" class="stock-status" style="color:green;">In Stock</span>
+                                        <span id="quantity" class="instock" style="color:green;">{{ product.quantity }} pieces</span>
+                                    {% else %}
+                                        <span id="stock_status" class="stock-status" style="color:red;">Out Of Stock</span>
+                                        <span id="quantity" class="instock" style="color:red;">{{ product.quantity }} pieces</span>
+
+                                    {% endif %}
                                 </div>
 
                                 <script>
@@ -247,7 +259,7 @@
                 </div>
             </div>
             <!--Product Fearure-->
-            <div class="prFeatures" style="margin-top: 20px;">
+            <div class="prFeatures" style="margin-top: 70px;">
                 <div class="row">
                     <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
                         <img src="{% static "grabify/images/credit-card.png" %}" alt="Safe Payment" title="Safe Payment" />
