@@ -3,7 +3,7 @@ import json
 from operator import itemgetter
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest , HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseBadRequest , HttpResponseRedirect, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Sum , Q ,F
 from django.utils import timezone
@@ -301,41 +301,28 @@ def update_cart(request):
         Cart.objects.filter(user=user, product__id=product_id).delete()
 
     return redirect('cart_management')
-
-def quantity_plus(request , product_id):
-    user = request.user
-    product = Product.objects.get(pk = product_id)   
-    cart_item = Cart.objects.get(user = user , product = product)
-    variant = Variant.objects.get(product = product , size = cart_item.size)
-    
-    if variant.quantity < cart_item.quantity+1:
-        error_message = f"Quantity not available for {cart_item.product.name}. It only has {variant.quantity} quantity."
-        cart_items = Cart.objects.filter(user=user)
-        total_sum = cart_items.aggregate(Sum('total'))['total__sum'] or 0
-        return render(request, 'cart.html', {'cart_items': cart_items, 'total_sum': total_sum, 'error_message': error_message, 'error_flag': True})
-    else:
-        cart_item.quantity += 1
-        cart_item.save()
-        return redirect('cart_management')
-    
-def quantity_minus(request , product_id):
-    user = request.user
-    product = Product.objects.get(pk = product_id)
-    cart_item = Cart.objects.get(user = user , product = product)
-    if cart_item.quantity <= 1:
-        cart_item.quantity = 1
-        cart_item.save()
-        return redirect('cart_management')
-    else:
-        cart_item.quantity -= 1
-        cart_item.save()
-        return redirect('cart_management')
         
 
 
 def checkout(request):
     cart_items = Cart.objects.filter(user=request.user)
     cart_items = list(cart_items.values())
+    for cart_item in cart_items:
+        product = Product.objects.get(pk=cart_item['product_id'])
+        variant = Variant.objects.get(product=product, size=cart_item['size'])
+        if cart_item['quantity'] > variant.quantity:
+            if variant.quantity <= 0:
+                error_message = 'We are really sorry the item is sold out all pieces'
+                cart_items = Cart.objects.filter(user=request.user)
+                total_sum = sum(item.total for item in cart_items) or 0
+                return render(request, 'cart.html', {'cart_items': cart_items, 'total_sum': total_sum, 'error_message': error_message, 'error_flag': True})
+            else:
+                quantity = variant.quantity
+                error_message = f'We are really sorry the {variant.product.name} size has only {quantity} pieces now'
+                cart_items = Cart.objects.filter(user=request.user)
+                total_sum = sum(item.total for item in cart_items) or 0
+                return render(request, 'cart.html', {'cart_items': cart_items, 'total_sum': total_sum, 'error_message': error_message, 'error_flag': True})    
+
     for item in cart_items:
         item['total'] = float(item['total'])
 
@@ -999,3 +986,23 @@ def add_funds(request):
     else:
         form = AddFundsForm()
     return render(request, 'add_funds.html', {'form': form})
+
+
+def update_quantity(request):
+    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        item_id = request.POST.get('item_id')
+        action = request.POST.get('action')
+
+        try:
+            cart_item = Cart.objects.get(id=item_id)
+            if action == 'increment':
+                cart_item.quantity += 1
+            elif action == 'decrement':
+                if cart_item.quantity > 1:
+                    cart_item.quantity -= 1
+            cart_item.save()
+            return JsonResponse({'success': True, 'quantity': cart_item.quantity})
+        except Cart.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Cart item not found.'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request.'})
