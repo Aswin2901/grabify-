@@ -6,7 +6,7 @@ from django.shortcuts import render,redirect , get_object_or_404
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
-from grabify.models import CustomUser as grabify_user , OrderDetails , OrderItems
+from grabify.models import CustomUser as grabify_user , OrderDetails , OrderItems , Wallet
 from .models import Product , Category , Variant , Offer
 from .forms import ProductFilterForm , UserFilterForm , OrderFilterForm ,OfferForm
 from datetime import timedelta
@@ -334,12 +334,16 @@ def change_order_status(request , order_id):
         return HttpResponseForbidden("You do not have permission to access this page.")
     
     order = get_object_or_404(OrderDetails , id = order_id)
+    wallet = get_object_or_404(Wallet , user = order.user)
     if request.method == 'POST':
         new_status = request.POST.get('status')
         if new_status == 'Accept':
             order.status = 'Accepted'
             order.save()
         elif new_status == 'Cancel':
+            wallet.balance += order.total
+            wallet.save()
+            
             order.status = 'Cancelled'
             order.save()
         elif new_status == 'placed':

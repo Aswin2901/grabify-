@@ -419,6 +419,7 @@ def checkout(request):
                 variant.save()
                 product.quantity -= cart_item['quantity']
                 product.save()
+                Cart.objects.filter(user=user).delete()
 
             return redirect('success')
 
@@ -519,6 +520,8 @@ def payment_completed_view(request):
             variant=variant,
             quantity=quantity
         )
+        
+    Cart.objects.filter(user=user).delete()
     
     return render(request, 'payment_completed.html')
 
@@ -673,8 +676,10 @@ def cancel_order_view(request, order_id):
 
     if order.status != 'Cancelled':
         wallet = Wallet.objects.get(user = request.user)
+        print(wallet.balance , order.total)
         wallet.balance += order.total
         wallet.save()
+        print(wallet.balance , order.total)
         order.status = 'Cancelled'
         order.save()
         messages.success(request, 'Order successfully cancelled.')
