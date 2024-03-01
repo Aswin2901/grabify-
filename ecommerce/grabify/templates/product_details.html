@@ -214,7 +214,27 @@
                                             <a class="qtyBtn plus"><i class="fa anm anm-plus-r" aria-hidden="true"></i></a>
                                         </div>
                                     </div>
-                                </div>                     
+                                </div>
+                                
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const minusBtn = document.querySelector('.qtyBtn.minus');
+                                        const plusBtn = document.querySelector('.qtyBtn.plus');
+                                        const quantityInput = document.getElementById('Quantity');
+                                
+                                        minusBtn.addEventListener('click', function () {
+                                            const currentValue = parseInt(quantityInput.value);
+                                            if (currentValue > 1) {
+                                                quantityInput.value = currentValue - 1;
+                                            }
+                                        });
+                                
+                                        plusBtn.addEventListener('click', function () {
+                                            const currentValue = parseInt(quantityInput.value);
+                                            quantityInput.value = currentValue + 1;
+                                        });
+                                    });
+                                </script>                     
                                 <div class="product-form__item--submit">
                                     <button type="submit" name="add" class="btn product-form__cart-submit">
                                         <span>Add to Cart</span>

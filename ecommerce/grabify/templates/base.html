@@ -41,7 +41,7 @@
                 <div class="row align-items-center">
                     <!--Desktop Logo-->
                     <div class="logo col-md-2 col-lg-2 d-none d-lg-block">
-                        <a href="index.html">
+                        <a href="{% url 'index' %}">
                             <img src="{% static 'grabify/images/grabify-logo.svg' %}" alt="Grabify" title="Grabify" />
                         </a>
                     </div>
@@ -65,31 +65,17 @@
                             </li>
                             <li class="lvl1 parent dropdown"><a href="#">Pages <i class="anm anm-angle-down-l"></i></a>
                               <ul class="dropdown">
-                              	<li><a href="{% url 'cart_management' %}" class="site-nav">Cart Page <i class="anm anm-angle-right-l"></i></a>
+                                <li><a href="{% url 'cart_management' %}" class="site-nav">Cart Page <i class="anm anm-angle-right-l"></i></a>
+                                    
                                 </li>
-								                <li><a href="checkout.html" class="site-nav">Checkout</a></li>
-                                <li><a href="about-us.html" class="site-nav">About Us <span class="lbl nm_label1">New</span> </a></li>
-                                <li><a href="contact-us.html" class="site-nav">Contact Us</a></li>
-                                <li><a href="faqs.html" class="site-nav">FAQs</a></li>
-                                <li><a href="lookbook1.html" class="site-nav">Lookbook<i class="anm anm-angle-right-l"></i></a>
-                                  <ul>
-                                    <li><a href="lookbook1.html" class="site-nav">Style 1</a></li>
-                                    <li><a href="lookbook2.html" class="site-nav">Style 2</a></li>
-                                  </ul>
+                                <li><a href="{% url 'shop_lap_list' %}" class="site-nav">Product <i class="anm anm-angle-right-l"></i></a>
+                                    
                                 </li>
-                                <li><a href="404.html" class="site-nav">404</a></li>
-                                <li><a href="coming-soon.html" class="site-nav">Coming soon <span class="lbl nm_label1">New</span> </a></li>
+                                <li><a href="{% url 'wishlist' %}" class="site-nav">Whishlist</a></li>
+                                <li><a href="{% url 'user_profile' %}" class="site-nav">User profile</a></li>
                               </ul>
                             </li>
-                            <li class="lvl1 parent dropdown"><a href="#">Blog <i class="anm anm-angle-down-l"></i></a>
-                              <ul class="dropdown">
-                                <li><a href="blog-left-sidebar.html" class="site-nav">Left Sidebar</a></li>
-                                <li><a href="blog-right-sidebar.html" class="site-nav">Right Sidebar</a></li>
-                                <li><a href="blog-fullwidth.html" class="site-nav">Fullwidth</a></li>
-                                <li><a href="blog-grid-view.html" class="site-nav">Gridview</a></li>
-                                <li><a href="blog-article.html" class="site-nav">Article</a></li>
-                              </ul>
-                        </li>
+                            
                         <li class="lvl1"><a href="{% url 'shop_lap_list' %}"><b>Buy Now!</b></a></li>
                         </nav>
                         <!--End Desktop Menu-->
