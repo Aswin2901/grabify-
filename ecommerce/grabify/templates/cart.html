@@ -101,28 +101,34 @@
                                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                             <script>
                                                 $(document).ready(function() {
-                                                    // Get CSRF token from the cookie
                                                     var csrftoken = getCookie('csrftoken');
-
+                                                
                                                     $('.cart_qtyBtn').on('click', function(e) {
-                                                        e.preventDefault(); // Prevent default action of anchor tag
+                                                        e.preventDefault();
                                                         var $this = $(this);
                                                         var itemId = $this.data('item-id');
                                                         var action = $this.hasClass('plus') ? 'increment' : 'decrement';
-
+                                                
                                                         $.ajax({
                                                             type: 'POST',
-                                                            url: '/update_quantity/', // Specify the URL for updating quantity
+                                                            url: '/update_quantity/',
                                                             data: {
                                                                 'item_id': itemId,
                                                                 'action': action,
-                                                                'csrfmiddlewaretoken': csrftoken // Include CSRF token in the data
+                                                                'csrfmiddlewaretoken': csrftoken
                                                             },
-                                                            dataType: 'json', // Ensure the response is parsed as JSON
+                                                            dataType: 'json',
                                                             success: function(data) {
                                                                 if (data.success) {
-                                                                    var $qtyInput = $('#qty_' + itemId);
-                                                                    $qtyInput.val(data.quantity);
+                                                                    // Update the quantity input field
+                                                                    $('#qty_' + itemId).val(data.quantity);
+                                                                    console.log('data.quantity' ,data.quantity )
+                                                
+                                                                    // Update the item total price
+                                                                    $('#item_total_' + itemId).text('$' + data.item_total);
+                                                
+                                                                    // Update the cart total price
+                                                                    $('#cart_total').text('$' + data.cart_total);
                                                                 } else {
                                                                     alert(data.message);
                                                                 }
@@ -132,15 +138,13 @@
                                                             }
                                                         });
                                                     });
-
-                                                    // Function to get CSRF token from cookie
+                                                
                                                     function getCookie(name) {
                                                         var cookieValue = null;
                                                         if (document.cookie && document.cookie !== '') {
                                                             var cookies = document.cookie.split(';');
                                                             for (var i = 0; i < cookies.length; i++) {
                                                                 var cookie = jQuery.trim(cookies[i]);
-                                                                // Check if the cookie name matches the expected format
                                                                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                                                                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                                                                     break;
@@ -153,7 +157,7 @@
                                             </script>
                                         </td>
                                         <td class="text-right small--hide cart-price">
-                                            <div><span class="money">${{ cart_item.total }}</span></div>
+                                            <div><span class="money" id="item_total_{{ cart_item.id }}">${{ cart_item.total }}</span></div>
                                         </td>
                                         <td class="text-center small--hide">
                                             <form method="post" action="{% url 'update_cart' %}">
@@ -178,7 +182,7 @@
                     <div class="solid-border">
                         <div class="row">
                             <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Subtotal</strong></span>
-                            <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">${{ total_sum|default:0.00 }}</span></span>
+                            <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money" id="cart_total">${{ total_sum|default:0.00 }}</span></span>
                         </div>
                         <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
                         <a href="{% url 'checkout' %}" class="btn btn--small-wide checkout" id="cartCheckout">Checkout</a>

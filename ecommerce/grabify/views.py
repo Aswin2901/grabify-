@@ -994,14 +994,32 @@ def update_quantity(request):
         action = request.POST.get('action')
 
         try:
-            cart_item = Cart.objects.get(id=item_id)
+            cart_item = get_object_or_404(Cart, id=item_id)
+            
             if action == 'increment':
                 cart_item.quantity += 1
+                if cart_item.product.price:
+                    cart_item.total += cart_item.product.price
+                    
             elif action == 'decrement':
                 if cart_item.quantity > 1:
                     cart_item.quantity -= 1
+                    if cart_item.product.price:
+                        cart_item.total -= cart_item.product.price
+
             cart_item.save()
-            return JsonResponse({'success': True, 'quantity': cart_item.quantity})
+
+            # Recalculate the cart subtotal (sum of all cart items)
+            
+            cart_total = sum(item.total for item in Cart.objects.all() if item.user == request.user)
+
+            return JsonResponse({
+                'success': True, 
+                'quantity': cart_item.quantity,
+                'item_total': cart_item.total,  # Updated total for the item
+                'cart_total': cart_total        # Total amount of the entire cart
+            })
+
         except Cart.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Cart item not found.'})
     else:
